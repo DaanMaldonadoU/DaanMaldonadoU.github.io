@@ -1,0 +1,1112 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Estimación de la entrada mediante Mínimos Cuadrados Recursivos &#8212; Apuntes de sensores inteligentes.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/estilo.css?v=6c6e7ef5" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/chapter3/chapter3';</script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" />
+    <link rel="next" title="Caso práctico: Estimación por subespacios e implementación de observadores para el diseño de sensores inteligentes." href="../chapter4/chapter4.html" />
+    <link rel="prev" title="Un Enfoque Dinámico para Galgas Extensiométicas." href="../chapter2/chapter2.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../landing.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Apuntes de sensores inteligentes. - Home"/>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Apuntes de sensores inteligentes. - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Búsqueda</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../landing.html">
+                    Apuntes de Sensores Inteligentes.
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Sobre el libro.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/livecode_info.html">Ejecución de códigos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 1.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../chapter1/notebooks.html">Introducción a los Mínimos Cuadrados Recursivos.</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 2.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../chapter2/chapter2.html">Un Enfoque Dinámico para Galgas Extensiométicas.</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 3.</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Estimación de la entrada mediante Mínimos Cuadrados Recursivos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 4.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../chapter4/chapter4.html">Caso práctico: Estimación por subespacios e implementación de observadores para el diseño de sensores inteligentes.</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Referencias.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../references/references.html">Referencias</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/main?urlpath=tree/docs/content/chapter3/chapter3.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Repositorio de origen"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fcontent/chapter3/chapter3.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Abrir un problema"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/content/chapter3/chapter3.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Estimación de la entrada mediante Mínimos Cuadrados Recursivos</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduccion">Introducción</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estimacion-de-la-entrada-sin-modelo-del-sistema">Estimación de la entrada sin modelo del sistema</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ejemplo-de-implementacion-del-algoritmo">Ejemplo de implementación del algoritmo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementacion-en-un-caso-practico">Implementación en un caso práctico</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="estimacion-de-la-entrada-mediante-minimos-cuadrados-recursivos">
+<h1>Estimación de la entrada mediante Mínimos Cuadrados Recursivos<a class="headerlink" href="#estimacion-de-la-entrada-mediante-minimos-cuadrados-recursivos" title="Link to this heading">#</a></h1>
+<section id="introduccion">
+<h2>Introducción<a class="headerlink" href="#introduccion" title="Link to this heading">#</a></h2>
+<p>Los sensores, poseen una dinámica inherente que afecta su comportamiento, es decir. Esta dinámica puede dividirse en dos partes: la respuesta transitoria y la respuesta en estado estacionario. Generalmente, es en el estado estacionario donde la salida del sensor se relaciona linealmente con la variable de entrada, lo que facilita su uso en aplicaciones prácticas.</p>
+<p>Tradicionalmente, se emplea la ganancia estática para estimar la entrada a partir de la salida en estado estacionario. Sin embargo, durante el periodo transitorio, esta aproximación puede generar errores significativos debido a la discrepancia entre la respuesta real y el modelo estacionario. Esto introduce un trade-off inherente entre la velocidad y la precisión del sensor: priorizar una respuesta rápida puede sacrificar precisión, mientras que buscar mayor exactitud puede aumentar el tiempo necesario para alcanzar el estado estacionario.</p>
+<p>Sin embargo existen enfoques, como el diseño de compensadores, que buscan mejorar la dinámica de los sensores al filtrar o reducir la respuesta transitoria. Estos métodos pueden optimizar tanto la velocidad como la precisión del sensor, al permitir que su salida converja más rápidamente a la señal de entrada deseada. Por ejemplo, compensadores basados en controladores PID o filtros adaptativos. Estos enfoques no están exentos de limitaciones. En primer lugar, el diseño de compensadores requiere un modelado preciso de la dinámica del sensor. Otra desventaja es que, al tratar de mejorar la velocidad de respuesta, se puede amplificar el ruido de alta frecuencia, afectando la precisión global del sistema <span id="id1">[<a class="reference internal" href="../references/references.html#id8" title="Karl Johan Åström and Richard M. Murray. Feedback Systems: An Introduction for Scientists and Engineers. Princeton University Press, Princeton, NJ, second edition edition, 2012. URL: https://press.princeton.edu/books/hardcover/9780691151769/feedback-systems.">AM12</a>]</span>.</p>
+<p>Por lo tanto, aunque los compensadores ofrecen ventajas significativas para mejorar la dinámica de los sensores, su implementación debe evaluarse cuidadosamente para garantizar que los beneficios superen los costos y riesgos asociados.</p>
+<p>Por otro lado <span id="id2">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, nos presenta método basa en datos diseñado para un DSP, que es <strong>la estimación directa de la entrada al escalón a partir de la respuesta a este del sensor</strong>.  Como se menciona en <span id="id3">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, este método formula un problema de errores en variables (EIV) estructurado en Hankel con correlación. La matriz de regresión tiene una estructura de bloques de Hankel y la correlación existe porque la respuesta transitoria, perturbada por el ruido de medición (se asume que el reuido de medición tiene media cero y varianza finita), construye tanto la matriz de regresión como el regresor. Por lo que el método se implementa en tiempo real utilizando una solución de mínimos cuadrados recursivos del problema estructurado EIV. Este método tiene como principal ventaja que no es necesario el añadir el compensador, únicamente es necesaria la medición de la salida del sensor.</p>
+</section>
+<section id="estimacion-de-la-entrada-sin-modelo-del-sistema">
+<h2>Estimación de la entrada sin modelo del sistema<a class="headerlink" href="#estimacion-de-la-entrada-sin-modelo-del-sistema" title="Link to this heading">#</a></h2>
+<p>El método que se presenta a continuación, puede estimar el nivel de entrada al escalón, sin la necesidad de identificar el modelo del sensor. Este método es obtenido de <span id="id4">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>.</p>
+<p>Para derivar a este método, utilizamos el operador de diferencias finitas <span class="math notranslate nohighlight">\(\Delta\)</span>, el cual se define como:</p>
+<div class="math notranslate nohighlight">
+\[\Delta y(k) = y(k + 1) - y(k)\]</div>
+<p>Sea un sistema representado en espacio de estados, como se muestra a continuación:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{x}(k+1) = \mathbf{A}\mathbf{x}(k) + \mathbf{B}u(k), \quad \mathbf{x}_{\text{ini}} = \mathbf{x}(0)\]</div>
+<div class="math notranslate nohighlight">
+\[y(k) = \mathbf{Cx}(k) + Du(k) + \epsilon(k)\]</div>
+<p>donde <span class="math notranslate nohighlight">\(\mathbf{A} \in \Re^{x \times n}\)</span>, <span class="math notranslate nohighlight">\(\mathbf{B} \in \Re^{n}\)</span>, <span class="math notranslate nohighlight">\(\mathbf{C} \in \Re^{1 \times n}\)</span>, y <span class="math notranslate nohighlight">\(D \in \Re\)</span>, son las matrices del modelo, <span class="math notranslate nohighlight">\(\epsilon\)</span> es el ruido de medición y <span class="math notranslate nohighlight">\(n\)</span> el orden del sistema.</p>
+<p>Aplicando el operador <span class="math notranslate nohighlight">\(\Delta\)</span> para una diferencia finita sobre el sistema antes presentado, resulta el siguiente sistema autonomo</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{\Delta} \mathbf{x} (k + 1) = \mathbf{A}\mathbf{\Delta} \mathbf{x}(k), \quad  \Delta y(k) = \mathbf{C}\mathbf{\Delta}\mathbf{x}(k), \quad \mathbf{\Delta}\mathbf{x}_{\text{ini}} = \mathbf{\Delta}\mathbf{x}(0)\]</div>
+<p>donde <span class="math notranslate nohighlight">\(\Delta u(k) = \mathbf{0}\)</span>, para <span class="math notranslate nohighlight">\(k\geq 0\)</span>, y <span class="math notranslate nohighlight">\(\mathbf{\Delta}\mathbf{x}(0) = (\mathbf{A} - \mathbf{I})\mathbf{x}(0) + \mathbf{B}u\)</span></p>
+<p>Si la respuesta <span class="math notranslate nohighlight">\(\Delta y\)</span> de este sistema autónomo es de excitación persistente de orden <span class="math notranslate nohighlight">\(L\)</span>, entonces el rango de la matriz de Hankel <span class="math notranslate nohighlight">\(\mathbf{\mathcal{H}}_{L+1}(\Delta y)\)</span>, formada por <span class="math notranslate nohighlight">\(L + 1\)</span> filas de bloques construidas a partir de <span class="math notranslate nohighlight">\(\Delta y\)</span>, satisface:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\text{rank} (\mathbf{\mathcal{H}}_{L+1}(\Delta y)) = \text{rank} \left\{\begin{pmatrix}
+\Delta y(1) &amp; \Delta y(2) &amp;  \cdots &amp; \Delta y(n) \\
+\Delta y(2) &amp; \Delta y(3) &amp;  \cdots &amp;  \Delta y(n+1) \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots  \\
+ \Delta y(L+1) &amp;  \Delta y(L+2)  &amp; \cdots &amp;  \Delta y(L+N)
+\end{pmatrix}\right\} \leq L\end{split}\]</div>
+<p>Como se indica en <span id="id5">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, se asume que la respuesta autónoma <span class="math notranslate nohighlight">\(\Delta y\)</span> es de excitación persistente con un orden suficientemente alto. En este caso, la imagen de las columnas de la matriz de Hankel <span class="math notranslate nohighlight">\(\mathbf{\mathcal{H}}_{N-n}(\Delta y)\)</span> forma un espacio lineal que contiene todas las respuestas naturales del sistema autónomo aumentado, como se muestra a continuación:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{x}_a(k+1) = \begin{bmatrix}
+\mathbf{A} &amp; \mathbf{B}  \\
+0 &amp; 1 
+\end{bmatrix} \mathbf{x}_a(k), \quad \text{donde } \mathbf{x}_a(k) = \begin{bmatrix}
+\mathbf{x}(k)  \\
+u(k) 
+\end{bmatrix}, \quad \mathbf{x}_{\text{ini}}(k) = \mathbf{x}(0)\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[y(k) = \begin{bmatrix}
+\mathbf{C} &amp; D 
+\end{bmatrix}\mathbf{x}_{a}(k) \]</div>
+<p>entonces</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{y}_{\text{natural}} = \mathbf{\mathcal{H}}_{N-n}(\Delta y)\mathbf{\mathcal{l}},\]</div>
+<p>para cualquier vector <span class="math notranslate nohighlight">\(\mathbf{\mathcal{l}} \in \Re^n\)</span>, dado que el sistema autónomo se deriva de un sistema lineal e invariante en el tiempo (LIT), al aumentar un estado y considerando que la entrada escalón forma parte de las condiciones iniciales, la respuesta total del sistema LIT es la suma de la respuesta forzada, debida a la entrada aplicada <span class="math notranslate nohighlight">\(u\)</span>, y la respuesta natural, generada a partir de la matriz de Hankel.</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{y} = \mathbf{y}_{forzada} + \mathbf{y}_{natural} = Gu + \mathbf{\mathcal{H}}(\Delta y)\mathbf{\mathcal{l}},\]</div>
+<p>donde <span class="math notranslate nohighlight">\(G\)</span> es la ganancia estática del sistema. Lo anterior es equivalente a</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+y(n+1)  \\
+\vdots \\
+y(N) 
+\end{bmatrix} = \begin{bmatrix}
+G &amp; \Delta y(1) &amp; \Delta y(2) &amp; \dots &amp;  \Delta y(n) \\
+G &amp; \Delta y(2) &amp; \Delta y(3) &amp; \dots &amp; \Delta y(n+1) \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+G &amp;  \Delta y(N-n) &amp; \Delta y(N-n+1) &amp; \dots &amp; \Delta y(N-1)
+\end{bmatrix}\begin{bmatrix}
+u  \\
+ \mathbf{\mathcal{l}}
+\end{bmatrix}\end{split}\]</div>
+<p>donde <span class="math notranslate nohighlight">\(N\)</span> es el número de muestras. Según lo señalado en <span id="id6">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, el vector <span class="math notranslate nohighlight">\(\mathbf{\mathcal{l}}\)</span> es una transformación lineal de las condiciones iniciales del sistema. La solución a este sistema de ecuaciones existe y es única cuando se cuenta con datos exactos. Sin embargo, en la práctica, las mediciones de los sensores siempre estarán contaminadas por perturbaciones.</p>
+<p>Como se mencionó anteriormente, las observaciones del vector <span class="math notranslate nohighlight">\(\mathbf{y}\)</span> están perturbadas por ruido de medición <span class="math notranslate nohighlight">\(\epsilon\)</span>, el cual tiene media cero y varianza <span class="math notranslate nohighlight">\(\sigma_{\epsilon}^2\)</span>. Podemos expresar entonces:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathbf{y}} = \mathbf{y} + \mathbf{\epsilon}, \quad \hat{\mathbf{K}} = \mathbf{K} + \mathbf{E}\]</div>
+<p>La matriz <span class="math notranslate nohighlight">\(\mathbf{E}\)</span> esta construida con los datos del ruido, y esta dado por</p>
+<div class="math notranslate nohighlight">
+\[\begin{split} \mathbf{E} = \begin{bmatrix}
+0 &amp; \Delta \epsilon(1) &amp; \Delta \epsilon(2) &amp; \dots &amp;  \Delta \epsilon(n) \\
+0 &amp; \Delta \epsilon(2) &amp; \Delta \epsilon(3) &amp; \dots &amp; \Delta \epsilon(n+1) \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp;  \Delta \epsilon(N-n) &amp; \Delta \epsilon(N-n+1) &amp; \dots &amp; \Delta \epsilon(N-1)
+\end{bmatrix}\end{split}\]</div>
+<p>mientras que la matriz <span class="math notranslate nohighlight">\(\hat{\mathbf{K}}\)</span> es expresada</p>
+<div class="math notranslate nohighlight">
+\[\begin{split} \hat{\mathbf{K}} = \begin{bmatrix}
+G &amp; \Delta \hat{y}(1) &amp; \Delta \hat{y}(2) &amp; \dots &amp;  \Delta \hat{y}(n) \\
+G &amp; \Delta \hat{y}(2) &amp; \Delta \hat{y}(3) &amp; \dots &amp; \Delta \hat{y}(n+1) \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+G &amp;  \Delta \hat{y}(N-n) &amp; \Delta \hat{y}(N-n+1) &amp; \dots &amp; \Delta \hat{y}(N-1)
+\end{bmatrix}\end{split}\]</div>
+<p>Por lo que el sistema resultante de las ecuaciones, es</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathbf{y}} = \hat{\mathbf{K}}\mathbf{\theta}\]</div>
+<p>que expresado como un problema de minimización</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathbf{\theta}} = \text{argmin}_{\theta} \vert\vert  \hat{\mathbf{y}} - \hat{\mathbf{K}}\mathbf{\theta} \vert\vert_2^2\]</div>
+<p>donde <span class="math notranslate nohighlight">\(\hat{\mathbf{y}} = \begin{bmatrix}
+\hat{y}(n+1) &amp; \dots &amp; \hat{y}(N) 
+\end{bmatrix}^T\)</span>, y <span class="math notranslate nohighlight">\(\hat{\mathbf{\theta}} = \begin{bmatrix}
+\hat{u} &amp;  \hat{\mathit{l}}^T 
+\end{bmatrix}^T\)</span>. Este problema de minimización es un problema de <em>errores en las variables</em> (EIV) con estructura de Hankel y correlación entre la matriz de regresión <span class="math notranslate nohighlight">\(\hat{\mathbf{K}}\)</span> y el vector de regresores <span class="math notranslate nohighlight">\(\hat{\mathbf{y}}\)</span> <span id="id7">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>.</p>
+<p>El método de estimación de entrada por escalón basado en datos convierte el problema de identificación simultánea del modelo de error de salida y la estimación de entrada en un problema de estimación de entrada <em>errores en las variables</em> (EIV). El costo de evitar la modelización paramétrica del sensor es enfrentarse a un marco estocástico más complej <span id="id8">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>.</p>
+<p>Como podemos observar, este problema puede resolverse mediante mínimos cuadrados, siendo los mínimos cuadrados recursivos la opción más adecuada para implementar este método en línea. Esto es lo que exploraremos en este capítulo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bibliotecas utilizadas</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">control.matlab</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ejemplo-de-implementacion-del-algoritmo">
+<h2>Ejemplo de implementación del algoritmo<a class="headerlink" href="#ejemplo-de-implementacion-del-algoritmo" title="Link to this heading">#</a></h2>
+<p>En <span id="id9">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, se presenta una implementación práctica de una celda de carga, a la que se le aplicó una masa conocida de <span class="math notranslate nohighlight">\(138.32 [g]\)</span> y se realizó el proceso de adquisición de los datos. Para más información sobre el montaje experimental, el material empleado y la URL con los datos experimentales, consultar  <span id="id10">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span> A continuación, se cargarán los datos mencionados de dicha implementación experimental y se graficarán.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Carga de los datos guardados previamente en un csv</span>
+<span class="n">mass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;sources/data_mass.csv&#39;</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+<span class="c1"># Gráfica de los datos experimentales completos</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/3c18ad131541f153a038ab54a3e4e8ee95537937c28da0e7b0ae4e1b9a4577a7.png" src="../../_images/3c18ad131541f153a038ab54a3e4e8ee95537937c28da0e7b0ae4e1b9a4577a7.png" />
+</div>
+</div>
+<p>En la gráfica superior podemos ver los datos experimentales obtenidos en <span id="id11">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, correspondientes a 20,000 muestras. Sin embargo, para poder visualizarlos mejor, a continuación graficaremos las primeras 4,000 muestras.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Gráfica de los datos experimentales completos</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mass</span><span class="p">[:</span><span class="mi">4000</span><span class="p">],</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/ac1271d8b2caaff2a91af591d4e8847d4306eba05d4ebc9258478b09a98417ff.png" src="../../_images/ac1271d8b2caaff2a91af591d4e8847d4306eba05d4ebc9258478b09a98417ff.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>A continuación se presentarán las funciones necesarias para poder emplear este método en <code class="docutils literal notranslate"><span class="pre">Python</span></code>, dichas funciones estan basadas en las proporcionadas en el URL de <span id="id12">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, las cuales se encuentran en <code class="docutils literal notranslate"><span class="pre">MATLAB</span></code>.</p>
+</div>
+<p>Una vez obtenidos los datos de las mediciones, le añadiremos el ruido de medición, con una relación señal-ruido (SNR)  de <span class="math notranslate nohighlight">\(50 [dB]\)</span>. Para esto, construiremos la siguiente función <em>add_noise</em>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">wanted_SNR</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Agrega ruido a la señal y0 para alcanzar un SNR deseado.</span>
+
+<span class="sd">    Parámetros:</span>
+<span class="sd">    y0: array_like</span>
+<span class="sd">        Señal original.</span>
+<span class="sd">    wanted_SNR: float</span>
+<span class="sd">        Relación señal-ruido deseada en dB.</span>
+
+<span class="sd">    Retorna:</span>
+<span class="sd">    y: array_like</span>
+<span class="sd">        Señal con ruido agregado.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y0</span><span class="p">)</span>
+    <span class="n">SNRini</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">SNR</span> <span class="o">=</span> <span class="n">SNRini</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mf">1e-2</span>
+    <span class="n">s_delta</span> <span class="o">=</span> <span class="mf">1e-3</span>
+
+    <span class="k">def</span> <span class="nf">compute_snr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">noise</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calcula la relación señal-ruido (SNR) en dB.&quot;&quot;&quot;</span>
+        <span class="n">signal_power</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">signal</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">noise_power</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">noise</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">signal_power</span> <span class="o">/</span> <span class="n">noise_power</span><span class="p">)</span>
+
+    <span class="c1"># Ajustar el nivel de ruido para alcanzar el SNR inicial</span>
+    <span class="k">while</span> <span class="n">SNR</span> <span class="o">&gt;=</span> <span class="n">SNRini</span><span class="p">:</span>
+        <span class="n">noise</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">SNR</span> <span class="o">=</span> <span class="n">compute_snr</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="n">s_delta</span>
+
+    <span class="c1"># Refinar el nivel de ruido para alcanzar el SNR deseado</span>
+    <span class="k">while</span> <span class="n">SNR</span> <span class="o">&lt;</span> <span class="n">wanted_SNR</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">-=</span> <span class="n">s_delta</span>
+        <span class="n">noise</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">SNR</span> <span class="o">=</span> <span class="n">compute_snr</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+
+    <span class="c1"># Generar la señal con ruido añadido</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">noise</span>
+
+    <span class="k">return</span> <span class="n">y</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Por lo que ahora, una vez construida la función para añadir ruido a las mediciones, con una relación señal a ruido de <span class="math notranslate nohighlight">\(50 [dB]\)</span>, hacemos uso de esta función y guardamos las nuevas meidiciones ruidosas en <code class="docutils literal notranslate"><span class="pre">mass_noise</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mass_noise</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>A continuación se presentan las funciones necesarias para el uso de este método, incluido el algoritmo de mínimos cuadrados recursivo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">blkhank</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="n">Tt</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Genera una matriz Hankel con bloques a partir de un vector de datos.</span>
+
+<span class="sd">    Parámetros:</span>
+<span class="sd">    dy : ndarray</span>
+<span class="sd">        Vector de diferencias (de tamaño (N, 1) o (N,)).</span>
+<span class="sd">    Tt : int</span>
+<span class="sd">        Número de filas deseadas para la matriz Hankel.</span>
+
+<span class="sd">    Retorna:</span>
+<span class="sd">    hankel_matrix : ndarray</span>
+<span class="sd">        Matriz Hankel de bloques con tamaño (Tt, n).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">hankel_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Tt</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>  <span class="c1"># Inicializar matriz con ceros</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Tt</span><span class="p">):</span>
+        <span class="n">hankel_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Selección de bloques consecutivos</span>
+    <span class="k">return</span> <span class="n">hankel_matrix</span>
+
+<span class="k">def</span> <span class="nf">rls</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementación optimizada de mínimos cuadrados recursivos (RLS).</span>
+
+<span class="sd">    Parámetros:</span>
+<span class="sd">    a : ndarray</span>
+<span class="sd">        Matriz de regresores.</span>
+<span class="sd">    b : ndarray</span>
+<span class="sd">        Vector de salidas.</span>
+<span class="sd">    lambda_ : float</span>
+<span class="sd">        Factor de olvido.</span>
+
+<span class="sd">    Retorna:</span>
+<span class="sd">    theta : ndarray</span>
+<span class="sd">        Estimación de parámetros a lo largo del tiempo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># Dimensiones de la matriz de regresores</span>
+
+    <span class="c1"># Inicialización de parámetros</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e6</span>  <span class="c1"># Matriz de covarianza inicializada con valores grandes</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Vector de regresores actual (como columna)</span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">theta</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># Error de predicción</span>
+
+        <span class="c1"># Ganancia de Kalman</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">lambda_</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">),</span> <span class="n">phi</span><span class="p">))</span>
+
+        <span class="c1"># Actualización de la matriz de covarianza</span>
+        <span class="n">P</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">phi</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>  <span class="n">P</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lambda_</span><span class="p">)</span>  <span class="c1"># Aplicar el factor de olvido</span>
+
+        <span class="c1"># Actualización del vector de parámetros</span>
+        <span class="n">theta</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">K</span> <span class="o">*</span> <span class="n">epsilon</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> 
+
+    <span class="k">return</span> <span class="n">theta</span>
+
+
+
+<span class="k">def</span> <span class="nf">stepid_dd</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ff</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimación de la entrada a escalón unitario mediante un algoritmo RLS.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        y (np.ndarray): Vector columna de mediciones(salidas del sistema).</span>
+<span class="sd">        g (float): Ganancia estática.</span>
+<span class="sd">        n (int): Orden del sistema.</span>
+<span class="sd">        ff (float): Factor de olvido del algoritmo RLS.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: Estimación de la entrada escalón `uh` con ajuste de retardo. </span>
+<span class="sd">                    Los primeros `n` valores estarán llenos de NaN para alinear con el retardo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Asegurar que y sea un vector columna</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c1"># Diferencias entre elementos consecutivos</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dy</span><span class="p">))</span>  <span class="c1"># Asegurar alineación con y</span>
+
+    <span class="n">T</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Longitud de la serie y</span>
+    <span class="n">Tt</span> <span class="o">=</span> <span class="n">T</span> <span class="o">-</span> <span class="n">n</span>  <span class="c1"># Ajuste por retardo</span>
+    <span class="n">yt</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">T</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># Salidas desplazadas según el retardo</span>
+
+    <span class="c1"># Crear matriz Hankel de bloques</span>
+    <span class="n">hankel_matrix</span> <span class="o">=</span> <span class="n">blkhank</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="n">Tt</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="c1"># Resolver con RLS</span>
+    <span class="n">g_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Tt</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">g</span>
+    <span class="n">regresores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">g_vector</span><span class="p">,</span> <span class="n">hankel_matrix</span><span class="p">))</span>
+    
+    <span class="n">x</span> <span class="o">=</span> <span class="n">rls</span><span class="p">(</span><span class="n">regresores</span><span class="p">,</span> <span class="n">yt</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">ff</span><span class="p">)</span>
+    
+
+    <span class="c1"># Estimación de la entrada escalón</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">g_vector</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">uh</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="n">m</span><span class="p">,</span> <span class="p">::</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">uh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">uh</span><span class="p">))</span>  <span class="c1"># Ajuste de tamaño</span>
+
+    <span class="k">return</span> <span class="n">uh</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Ahora, podemos ver que la última función construida tiene como parámetros las observaciones de la salida con ruido de medición, la ganancia estática del sistema, que se considerará unitaria, el orden del sensor, que asumiremos como en <span id="id13">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, es decir, de séptimo orden, y finalmente un factor de olvido unitario, lo que significa que trabajaremos con mínimos cuadrados recursivos ordinarios.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">lambda_</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">mass_estimated</span> <span class="o">=</span> <span class="n">stepid_dd</span><span class="p">(</span><span class="n">mass_noise</span><span class="p">[:</span><span class="mi">4000</span><span class="p">],</span> <span class="n">G</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mass_noise</span><span class="p">[:</span><span class="mi">4000</span><span class="p">],</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m_{+\epsilon}(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mass_estimated</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\hat</span><span class="si">{m}</span><span class="s1">(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">280</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/df94aa26009c10f34147c37dc97a07530213787d726801b3e878c3adf93e1cba.png" src="../../_images/df94aa26009c10f34147c37dc97a07530213787d726801b3e878c3adf93e1cba.png" />
+</div>
+</div>
+<p>Como podemos apreciar, rápidamente el algoritmo converge al valor de la entrada. Sin embargo, al compararlo con la salida, puede no ser tan evidente. Por lo tanto, en la siguiente figura se muestra la entrada estimada junto con la entrada real y el desarrollo del error absoluto porcentual entre la entrada real y la estimada.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mass_estimated</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\hat</span><span class="si">{m}</span><span class="s1">(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mf">138.32</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mass_estimated</span><span class="p">)),</span>
+          <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m_{+\epsilon}(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mi">137</span><span class="p">,</span> <span class="mi">140</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">error</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="mf">138.32</span> <span class="o">-</span> <span class="n">m_est</span><span class="p">)</span><span class="o">/</span><span class="mf">138.32</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="k">for</span> <span class="n">m_est</span> <span class="ow">in</span> <span class="n">mass_estimated</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\epsilon(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/6cd17ef0fe176b7c874eda7129ba71740909d58b6f89ad2e0182af92b644a353.png" src="../../_images/6cd17ef0fe176b7c874eda7129ba71740909d58b6f89ad2e0182af92b644a353.png" />
+<img alt="../../_images/4973400ce14c69cb8feabf43b19590e84e30f595b0f3d8f32756e89e0803e234.png" src="../../_images/4973400ce14c69cb8feabf43b19590e84e30f595b0f3d8f32756e89e0803e234.png" />
+</div>
+</div>
+<p>Como podemos apreciar, el error absoluto porcentual, rápidamente es menor al <span class="math notranslate nohighlight">\(0.2\%\)</span></p>
+</section>
+<section id="implementacion-en-un-caso-practico">
+<h2>Implementación en un caso práctico<a class="headerlink" href="#implementacion-en-un-caso-practico" title="Link to this heading">#</a></h2>
+<p>Para simular de mejor manera el funcionamiento del sensor del caso anterior, tomamos los datos los datos proporcionados en <span id="id14">[<a class="reference internal" href="../references/references.html#id6" title="Gustavo Quintana-Carapia. Statistical analysis and experimental validation of data-driven dynamic measurement methods. PhD thesis, Vrije Universiteit Brussel, 2020.">QC20</a>]</span>, y utilizando el <code class="docutils literal notranslate"><span class="pre">System</span> <span class="pre">Identification</span> <span class="pre">Toolbox</span></code> de <code class="docutils literal notranslate"><span class="pre">MATLAB</span></code>, se obtuvo una función de transferencia de segundo orden que aproxima el comportamiento del sensor real. Por lo que la función de transferencia del sensor es</p>
+<div class="math notranslate nohighlight">
+\[H(s) = \frac{108400}{s^2 + 6.567s + 108400}\]</div>
+<p>Una vez obtenida esta función, se someterá a un proceso de discretización, utilizando el retenedor de orden cero. Con la ecuación en diferencias, se simularán las mediciones del sensor ante la siguiente entrada.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20000</span><span class="p">)</span>
+<span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># Inicializar la señal con ceros</span>
+
+<span class="c1"># Asignar valores a los intervalos</span>
+<span class="n">signal</span><span class="p">[(</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">signal</span><span class="p">[(</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">5000</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">signal</span><span class="p">[(</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">10000</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">15000</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">234</span>
+<span class="n">signal</span><span class="p">[(</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">15000</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">20000</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">578</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/cf990bed6be0b68220e8bb441a2cd6619913d8d9411e90853bd1b24f012c13a5.png" src="../../_images/cf990bed6be0b68220e8bb441a2cd6619913d8d9411e90853bd1b24f012c13a5.png" />
+</div>
+</div>
+<p>La siguiente señal, simulará el siguiente caso práctico:</p>
+<ol class="arabic simple">
+<li><p>Se coloca una masa de <span class="math notranslate nohighlight">\(100 g\)</span> sobre el sensor, para luego retirarla.</p></li>
+<li><p>Unos momentos después, se coloca otra masa de <span class="math notranslate nohighlight">\(234 g\)</span>.</p></li>
+<li><p>Instantes más tarde, sobre la masa ya añadida, se coloca otra de <span class="math notranslate nohighlight">\(344 g\)</span>, resultando en una masa total sobre el sensor de <span class="math notranslate nohighlight">\(578 g\)</span>.</p></li>
+</ol>
+<p>Como se puede apreciar en la dinámica del sensor, para obtener una medición precisa, es necesario esperar demasiado tiempo. Por lo tanto, si esperamos al estado estacionario para realizar la medición, resultará poco práctico. Es por esto que implementaremos el método bajo estudio.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definir el sistema continuo</span>
+<span class="n">num</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.084e05</span><span class="p">]</span>
+<span class="n">den</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">6.567</span><span class="p">,</span> <span class="mf">1.084e05</span><span class="p">]</span>
+<span class="n">system</span> <span class="o">=</span> <span class="n">tf</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">den</span><span class="p">)</span>
+
+<span class="c1"># Convertir a tiempo discreto usando Zero-Order Hold (ZOH)</span>
+<span class="n">Ts</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">4000</span>  <span class="c1"># Tiempo de muestreo</span>
+<span class="n">system_d</span> <span class="o">=</span> <span class="n">c2d</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">Ts</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;zoh&#39;</span><span class="p">)</span>
+
+<span class="c1"># Extraer los coeficientes del numerador y denominador</span>
+<span class="n">numd</span><span class="p">,</span> <span class="n">dend</span> <span class="o">=</span> <span class="n">system_d</span><span class="o">.</span><span class="n">num</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">system_d</span><span class="o">.</span><span class="n">den</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">numd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">signal</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="n">numd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">signal</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="n">dend</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dend</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m_</span><span class="si">{out}</span><span class="s1">(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m_</span><span class="si">{in}</span><span class="s1">(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/0f7c37ba26066b99025e8e65a59f8792833433dbcadf24933ee26f784aab1a62.png" src="../../_images/0f7c37ba26066b99025e8e65a59f8792833433dbcadf24933ee26f784aab1a62.png" />
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Añadiendo ruido a la señal de entrada</span>
+<span class="n">y_noise</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>Como podemos apreciar en la figura anterior, en cada una de las mediciones es necesario esperar más de la mitad de las muestras para obtener una medición relativamente precisa. Por lo tanto, a continuación se empleará el algoritmo presentado con las siguientes características:</p>
+<ol class="arabic simple">
+<li><p>Ganancia estática <span class="math notranslate nohighlight">\(G=1\)</span>.</p></li>
+<li><p>Orden del sensor <span class="math notranslate nohighlight">\(n = 7\)</span>.</p></li>
+<li><p>Factor de olvido <span class="math notranslate nohighlight">\(\lambda = 0.991\)</span></p></li>
+</ol>
+<p>En este caso, a diferencia del anterior, la señal de salida presenta cambios considerables, por lo que el factor de olvido se modifica, utilizando mínimos cuadrados recursivos con factor de olvido.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parámetros a modificar si desean</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">lambda_</span> <span class="o">=</span> <span class="mf">0.991</span>
+
+
+<span class="n">G</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">stepid_dd</span><span class="p">(</span><span class="n">y_noise</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_noise</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m_</span><span class="si">{out}</span><span class="s1">(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y2</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\hat</span><span class="si">{m}</span><span class="s1">_</span><span class="si">{in}</span><span class="s1">(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$m_</span><span class="si">{in}</span><span class="s1">(t)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$m\ [g]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/7961d42d316da8e876f637ed13e8b19179dee841e2923fb309d5292a2ba505a7.png" src="../../_images/7961d42d316da8e876f637ed13e8b19179dee841e2923fb309d5292a2ba505a7.png" />
+</div>
+</div>
+<p>Como podemos apreciar, este método basado en datos, le provee al sensor la capacidad de estimar la entrada a partir de mediciones ruidosas de la salida, esto con el mínimo error posible, por lo que resulta práctico para aplicaciones en tiempo real.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "executablebooks/jupyter-book",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content\chapter3"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../chapter2/chapter2.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">anterior</p>
+        <p class="prev-next-title">Un Enfoque Dinámico para Galgas Extensiométicas.</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../chapter4/chapter4.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">siguiente</p>
+        <p class="prev-next-title">Caso práctico: Estimación por subespacios e implementación de observadores para el diseño de sensores inteligentes.</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduccion">Introducción</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estimacion-de-la-entrada-sin-modelo-del-sistema">Estimación de la entrada sin modelo del sistema</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ejemplo-de-implementacion-del-algoritmo">Ejemplo de implementación del algoritmo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementacion-en-un-caso-practico">Implementación en un caso práctico</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Daan Yael Maldonado Uriostigue and Roberto Giovanni Ramírez Chavarría 
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p> Recurso académico realizado gracias al apoyo del proyecto UNAM-DGAPA-PAPIME PE101524.</p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
