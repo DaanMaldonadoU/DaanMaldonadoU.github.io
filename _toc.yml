@@ -1,0 +1,31 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root:  landing
+parts:
+  - caption: Sobre el libro.
+    chapters:
+    - file: content/introduction/livecode_info
+    
+  - caption: Capítulo 1.
+    chapters:
+    - file: content/chapter1/notebooks
+
+  - caption: Capítulo 2.
+    chapters:
+    - file: content/chapter2/chapter2
+  
+  - caption: Capítulo 3.
+    chapters:
+    - file: content/chapter3/chapter3
+
+  - caption: Capítulo 4.
+    chapters:
+    - file: content/chapter4/chapter4
+
+  - caption: Referencias.
+    chapters:
+    - file: content/references/references
+    
+     

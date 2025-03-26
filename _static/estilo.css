@@ -1,0 +1,334 @@
+
+body {
+  background-color: #ffffff; /* Fondo blanco base */
+  background-image: radial-gradient(circle, #e0e0e0 1px, transparent 1px);
+  background-size: 15px 15px; /* Ajuste del tamaño de puntos */
+  color: #1b1b1b; /* Texto en negro */
+  font-family: 'Arial', sans-serif;
+}
+
+/* Colores para enlaces */
+a {
+  color: #ff4d4d !important;
+  text-decoration: none;
+}
+a:hover {
+  color: #ff6666 !important;
+  text-decoration: underline;
+}
+
+/* Encabezados */
+h1, h2, h3, h4, h5, h6 {
+  color: #ff4d4d !important; /* Títulos en rojo */
+  border-bottom: 2px solid #ff4d4d !important;
+  padding-bottom: 5px;
+}
+
+/* Código y bloques de código */
+pre, code {
+  background-color: #f0f0f0  !important; /* Fondo claro para código */
+  color: #1b1b1b  !important; /* Texto negro en bloques de código */
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+div.highlight pre {
+  background-color: #f0f0f0  !important; /* Fondo claro para bloques de código resaltados */
+  color: #1b1b1b  !important;
+  padding: 10px;
+  border-radius: 5px;
+  overflow: auto;
+  font-size: 0.95em;
+}
+
+/* Bordes y contenedores */
+.container {
+  border: 1px solid #cccccc  !important;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Celdas de tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table, th, td {
+  border: 1px solid #cccccc !important;
+}
+th {
+  background-color: #ff4d4d !important; /* Encabezado de tabla en rojo */
+  color: white !important;
+  padding: 10px;
+}
+td {
+  background-color: #ffffff !important; /* Fondo blanco para las celdas */
+  color: #1b1b1b !important;
+  padding: 10px;
+}
+
+/* Resaltado de advertencias e información */
+.admonition {
+  border-left: 4px solid #ff4d4d !important;
+  padding: 15px;
+  margin: 20px 0;
+  background-color: #f9f9f9 !important;
+  color: #1b1b1b !important;
+  border-radius: 4px;
+}
+.admonition-title {
+  color: #000000 !important;
+  font-weight: bold;
+}
+
+/* Fijar el color de fondo y borde de las notas en ambos modos */
+.admonition.note {
+  background-color: #d0e7ff !important; /* Azul claro */
+  border-left: 5px solid #007bff !important; /* Azul más oscuro */
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.admonition.warning {
+  background-color: #ffcb87 !important; /* Azul claro */
+  border-left: 5px solid #f59f2f !important; /* Azul más oscuro */
+  padding: 15px;
+  border-radius: 5px;
+}
+
+
+/* Fijar el color del título de la nota */
+.admonition.note .admonition-title {
+  background-color: #a0c4ff !important; /* Azul más oscuro que el fondo, pero no muy fuerte */
+  color: #000000 !important; /* Azul oscuro */
+  font-weight: bold;
+}
+
+/* Fijar el color del título de la nota */
+.admonition.warning .admonition-title {
+  background-color: #f59f2f !important; /* Azul más oscuro que el fondo, pero no muy fuerte */
+  color: #000000 !important; /* Azul oscuro */
+  font-weight: bold;
+}
+
+/* Asegurar que cualquier contenido agregado con ::after también sea azul oscuro */
+p.admonition-title::after {
+  color: #000000 !important;
+  content: "";
+}
+/* Mantener el fondo claro en los bloques de código */
+.highlight {
+  background-color: #ffffff !important; /* Fondo blanco */
+  color: #1b1b1b !important; /* Texto negro */
+  border-radius: 5px;
+  padding: 10px;
+  overflow: auto;
+}
+
+/* Asegurar que los colores de sintaxis sean consistentes */
+.highlight .kn { color: #0000FF !important; } /* import, from */
+.highlight .nn { color: #0077aa !important; } /* numpy, matplotlib */
+.highlight .k  { color: #0000FF !important; } /* as, def, return */
+.highlight .nf  { color: #0000FF !important; } /* as, def, return */
+.highlight .n  { color: #1b1b1b !important; } /* Variables y nombres genéricos */
+.highlight .p  { color: #1b1b1b !important; } /* Variables y nombres genéricos */
+.highlight .mi  { color: #6a3a09 !important; } /* Variables y nombres genéricos */
+.highlight .o  { color: #666666 !important; } /* Operadores (+, -, *) */
+.highlight .c1 { color: #008000 !important; } /* Comentarios en verde */
+.highlight .s1 { color: #008000 !important; } /* Comentarios en verde */
+.highlight .sd { color: #008000 !important; } /* Comentarios en verde */
+.highlight .s  { color: #BA2121 !important; } /* Strings en rojo */
+.highlight .kc  { color: #BA2121 !important; } /* Strings en rojo */
+
+/* Evitar que el modo oscuro modifique los colores */
+html[data-theme="dark"] .highlight {
+  background-color: #ffffff !important; /* Mantener fondo blanco */
+  color: #1b1b1b !important;
+}
+
+/* Asegurar que el botón de copiar se vea bien */
+.copybtn {
+  background-color: #f0f0f0 !important; /* Fondo claro */
+  border: 1px solid #cccccc !important; /* Borde gris claro */
+  color: #000000 !important; /* Icono negro */
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.copybtn:hover {
+  background-color: #e0e0e0 !important;
+}
+
+
+
+/* Mantener los títulos de los capítulos en rojo */
+.caption-text {
+  color: #ff4d4d !important;
+}
+
+
+/* Evitar cambios de color en imágenes en modo oscuro */
+img {
+  background-color: white !important; /* Fijar fondo blanco */
+  filter: none !important; /* Evitar cualquier filtro automático */
+}
+
+/* Botones */
+button, .btn {
+
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+/* Footer */
+footer {
+  color: #666666 !important; 
+  font-size: 0.8em;
+  text-align: center;
+  padding: 10px;
+}
+footer a {
+  color: #ff4d4d !important;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #ffffff !important;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #ff4d4d !important;
+  border-radius: 5px;
+}
+
+/* Hacer que todos los enlaces con la clase .reference.internal sean azules */
+a.reference.internal {
+  color: #0044cc !important; /* Azul oscuro */
+  text-decoration: none;
+}
+
+a.reference.internal:hover {
+  color: #0066ff !important; /* Azul más claro al pasar el cursor */
+  text-decoration: underline;
+}
+
+#pst-primary-sidebar {
+  background-color: white !important;
+}
+
+#pst-primary-sidebar {
+  background-color: white !important;
+  color: black !important;
+}
+
+#pst-primary-sidebar a {
+  color: black !important;
+}
+
+.theme-switch-button {
+  display: none !important;
+}
+
+/* Mantener el fondo blanco en la barra de encabezado */
+.header-article-items {
+  background-color: #ffffff !important; /* Fondo blanco */
+  color: #1b1b1b !important; /* Texto oscuro */
+  border-bottom: 1px solid #dddddd;
+}
+
+/* Asegurar que los botones tengan un fondo claro */
+.header-article-item button,
+.article-header-buttons button {
+  background-color: #f8f8f8 !important; /* Fondo gris claro */
+  border: 1px solid #cccccc !important;
+  color: #333333 !important;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Estilizar los botones al pasar el cursor */
+.header-article-item button:hover,
+.article-header-buttons button:hover {
+  background-color: #e0e0e0 !important;
+}
+
+/* Asegurar que los menús desplegables tengan fondo blanco */
+.dropdown-menu {
+  background-color: #ffffff !important;
+  border: 1px solid #dddddd !important;
+}
+
+/* Evitar que los íconos cambien de color en modo oscuro */
+svg {
+  filter: none !important;
+}
+
+/* Asegurar que los textos dentro de los botones sean visibles */
+.btn__text-container {
+  color: #333333 !important;
+}
+
+/* Evitar que el modo oscuro modifique los colores */
+html[data-theme="dark"] .header-article-items,
+html[data-theme="dark"] .dropdown-menu {
+  background-color: #ffffff !important;
+  color: #1b1b1b !important;
+}
+
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] button {
+  background-color: #f8f8f8 !important;
+  color: #333333 !important;
+}
+
+.bd-header-article {
+  background-color: white !important;
+}
+
+/* Fondo blanco en la barra lateral secundaria */
+.sidebar-secondary-items {
+  background-color: #ffffff !important; /* Fondo blanco */
+  color: #1b1b1b !important; /* Texto negro */
+  border-left: 1px solid #dddddd;
+}
+
+/* Fondo blanco para el encabezado de la tabla de contenido */
+.page-toc {
+  background-color: #ffffff !important;
+  color: #1b1b1b !important;
+  padding: 10px;
+  border-bottom: 1px solid #dddddd;
+}
+
+/* Asegurar que los elementos de la tabla de contenido sean visibles */
+.bd-toc-nav a {
+  color: #1b1b1b !important;
+}
+
+/* Estilos para los elementos de la lista dentro de la tabla de contenido */
+.nav-item a {
+  background-color: #ffffff !important;
+  color: #1b1b1b !important;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Cambiar color de enlaces al pasar el cursor */
+.nav-item a:hover {
+  background-color: #f0f0f0 !important;
+  color: #ff4d4d !important;
+}
+
+/* Evitar que el modo oscuro modifique los colores */
+html[data-theme="dark"] .sidebar-secondary-items,
+html[data-theme="dark"] .page-toc {
+  background-color: #ffffff !important;
+  color: #1b1b1b !important;
+}

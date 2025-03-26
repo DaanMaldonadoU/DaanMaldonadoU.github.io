@@ -1,0 +1,62 @@
+# Book settings
+title: "Apuntes de sensores inteligentes."
+author: "Daan Yael Maldonado Uriostigue and Roberto Giovanni Ramírez Chavarría "
+copyright: "2024"
+logo: logo.png  # Tu logotipo, que también se mostrará en la barra de navegación
+
+# Configuración para notebooks
+execute:
+  execute_notebooks: force  # Ejecuta notebooks en cada compilación
+
+# Definición para salida en formato LaTeX y PDF
+latex:
+  latex_documents:
+    targetname: book.tex
+
+# Configuración para citas con archivos BibTeX
+bibtex_bibfiles:
+  - references.bib
+
+# Opciones para botones de GitHub y enlaces
+repository:
+  url: https://github.com/executablebooks/jupyter-book  # URL de tu libro en GitHub
+  path_to_book: docs  # Ruta opcional relativa al repositorio raíz
+  branch: main  # Rama usada para crear enlaces
+
+# Habilitar botones de GitHub
+html:
+  use_issues_button: true
+  use_repository_button: true
+  extra_footer: "<p> Recurso académico realizado gracias al apoyo del proyecto UNAM-DGAPA-PAPIME PE101524.</p>"
+  extra_navbar: 
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        document.documentElement.removeAttribute("data-theme");
+        document.documentElement.setAttribute("data-theme", "light");
+      });
+    </script>
+
+# Habilitar widgets interactivos y Thebe
+jupyter:
+  thebe: true
+  widgets: enabled
+
+# Opciones de lanzamiento y botones de ejecución interactiva
+launch_buttons:
+  binderhub_url: https://mybinder.org
+  thebe: true
+  repository_url: https://github.com/executablebooks/jupyter-book  # Sustituye por la URL de tu repositorio
+
+sphinx:
+  config:
+    language: es
+    html_static_path: ['_static']
+   # html_theme: quantecon_book_theme
+   # html_theme_options:
+   # header_organisation: CIDE
+parse:
+  myst_enable_extensions : ["dollarmath"]  # URI schemes that will be recognised as external URLs in Markdown links
+
+  html:
+  extra_css:
+    - _static/estilo.css

@@ -1,0 +1,900 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Caso práctico: Estimación por subespacios e implementación de observadores para el diseño de sensores inteligentes. &#8212; Apuntes de sensores inteligentes.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/estilo.css?v=6c6e7ef5" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/chapter4/chapter4';</script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" />
+    <link rel="next" title="Referencias" href="../references/references.html" />
+    <link rel="prev" title="Estimación de la entrada mediante Mínimos Cuadrados Recursivos" href="../chapter3/chapter3.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../landing.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Apuntes de sensores inteligentes. - Home"/>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Apuntes de sensores inteligentes. - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Búsqueda</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../landing.html">
+                    Apuntes de Sensores Inteligentes.
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Sobre el libro.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/livecode_info.html">Ejecución de códigos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 1.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../chapter1/notebooks.html">Introducción a los Mínimos Cuadrados Recursivos.</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 2.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../chapter2/chapter2.html">Un Enfoque Dinámico para Galgas Extensiométicas.</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 3.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../chapter3/chapter3.html">Estimación de la entrada mediante Mínimos Cuadrados Recursivos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Capítulo 4.</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Caso práctico: Estimación por subespacios e implementación de observadores para el diseño de sensores inteligentes.</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Referencias.</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../references/references.html">Referencias</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/main?urlpath=tree/docs/content/chapter4/chapter4.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Repositorio de origen"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fcontent/chapter4/chapter4.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Abrir un problema"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/content/chapter4/chapter4.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Caso práctico: Estimación por subespacios e implementación de observadores para el diseño de sensores inteligentes.</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#planteamiento">Planteamiento</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estimacion-por-subespacios">Estimación por subespacios</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementacion-de-observador-de-estados">Implementación de Observador de estados.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discusion">Discusión</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="caso-practico-estimacion-por-subespacios-e-implementacion-de-observadores-para-el-diseno-de-sensores-inteligentes">
+<h1>Caso práctico: Estimación por subespacios e implementación de observadores para el diseño de sensores inteligentes.<a class="headerlink" href="#caso-practico-estimacion-por-subespacios-e-implementacion-de-observadores-para-el-diseno-de-sensores-inteligentes" title="Link to this heading">#</a></h1>
+<section id="planteamiento">
+<h2>Planteamiento<a class="headerlink" href="#planteamiento" title="Link to this heading">#</a></h2>
+<p>Se considera un sistema <em>masa-resorte</em>, representado en la Figura 1:</p>
+<figure class="align-default" id="directive1-fig">
+<a class="reference internal image-reference" href="../../_images/masaresorte.png"><img alt="../../_images/masaresorte.png" src="../../_images/masaresorte.png" style="height: 300px;" /></a>
+<figcaption>
+<p><span class="caption-number">Figura 3 </span><span class="caption-text">Sistema Masa-Resorte. Imagen obtenida de <span id="id1">[<a class="reference internal" href="../references/references.html#id12" title="Disfruta la Física. Sistema masa-resorte. 2025. Accedido: 13 de enero de 2025. URL: https://drisfrutalaisica.wordpress.com/segundo-ciclo/eventos-ondulatorios/movimiento-armonico-simple/sistema-masa-resorte/.">lF25</a>]</span>.</span><a class="headerlink" href="#directive1-fig" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Dicho sistema fue implementado y, mediante una tarjeta de adquisición de datos, se registró la posición de la masa a lo largo del tiempo. Por lo tanto, se tiene acceso a la señal <span class="math notranslate nohighlight">\(x(t)\)</span>. Sin embargo, a pesar de conocer la dinámica del sistema y la salida, no se dispone de información sobre los parámetros físicos del sistema ni sobre las condiciones iniciales.</p>
+<p>El propósito de este capítulo es estimar los parámetros físicos del sistema e implementar un observador de estados para estimar la velocidad.</p>
+<p>Aunque el sistema <em>masa-resorte</em> es, en un caso ideal, un sistema oscilatorio, en condiciones reales existe cierto rozamiento de la masa con el aire, lo que genera un efecto de fricción. Como consecuencia, este sistema puede modelarse más adecuadamente como un <em>masa-resorte-amortiguador</em>. A partir de la estimación de los parámetros del sistema, es posible también determinar el coeficiente de fricción viscosa y, con ello, diseñar un viscosímetro.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ejecutar esta celda primero.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">solve_ivp</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">savgol_filter</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">display</span><span class="p">,</span> <span class="n">Math</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lectura de datos</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;sources/datos.csv&#39;</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+<span class="c1"># Vectores de tiempo y posición</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+
+<span class="c1"># Gráfica de los datos obtenidos</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$t\ [s]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$x\ [m]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/a5b8599707c43548df16a33d3a6c1c1de41c7f66be9348e610458b5feca60d18.png" src="../../_images/a5b8599707c43548df16a33d3a6c1c1de41c7f66be9348e610458b5feca60d18.png" />
+</div>
+</div>
+<p>Dado que este sistema es autónomo, no posee una entrada, y la salida depende exclusivamente de las condiciones iniciales. En este contexto, solo se tiene acceso a la salida del sistema, sin conocimiento previo de sus parámetros físicos ni de sus condiciones iniciales. Para abordar este problema, se emplea el método de identificación por subespacios <code class="docutils literal notranslate"><span class="pre">N4SID</span></code>.</p>
+</section>
+<section id="estimacion-por-subespacios">
+<h2>Estimación por subespacios<a class="headerlink" href="#estimacion-por-subespacios" title="Link to this heading">#</a></h2>
+<p>El método N4SID (<em>Numerical Subspace State Space System Identification</em>) es una técnica eficiente y robusta para estimar modelos en espacio de estados a partir de datos de entrada y salida de un sistema dinámico. Este enfoque destaca por su capacidad de identificar directamente las matrices del modelo (𝐴,𝐵,𝐶,𝐷) sin requerir modelos iniciales o ajustes iterativos complejos.</p>
+<p><code class="docutils literal notranslate"><span class="pre">N4SID</span></code> se basa en técnicas de álgebra lineal, como la descomposición en valores singulares (SVD), para extraer la información dinámica del sistema desde los datos. Utiliza conceptos de subespacios numéricos para separar el comportamiento del sistema del ruido, asegurando una estimación precisa y estable, incluso en presencia de ruido significativo. Este, es computacionalmente rápido y adecuado para sistemas de múltiples entradas y múltiples salidas (MIMO) y permite obtener modelos en espacio de estados sin requerir modelos paramétricos previos, simplificando el proceso de identificación.</p>
+<p>Por estas razones, <code class="docutils literal notranslate"><span class="pre">N4SID</span></code> es ideal para estimar modelos en espacio de estados que capturen la dinámica del sistema. El uso de este algoritmo, se realiza mediante el System Identification Toolbox de MATLAB, utilizando la siguiente linea de comandos:</p>
+<p><code class="docutils literal notranslate"><span class="pre">n4sid(Signal,</span> <span class="pre">2,</span> <span class="pre">'Form',</span> <span class="pre">'canonical',</span> <span class="pre">'Ts',</span> <span class="pre">0)</span></code></p>
+<p>En este caso le propocionamos los datos mediante el vector llamado <code class="docutils literal notranslate"><span class="pre">Signal</span></code>, en este caso se nos arroja un modelo en espacio de estados con la siguiente forma</p>
+<div class="math notranslate nohighlight">
+\[\dot{\mathbf{x}} = \mathbf{A}\mathbf{x} + \mathbf{K}e\]</div>
+<div class="math notranslate nohighlight">
+\[y = \mathbf{C}\mathbf{x} + e\]</div>
+<p>donde <span class="math notranslate nohighlight">\(e\)</span> representa las perturbaciones no modeladas y los errores inherentes al proceso de medición, considerándose una señal de ruido blanco con varianza constante. Por otro lado, la matriz <span class="math notranslate nohighlight">\(\mathbf{K}\)</span> conocida como <em>componente de perturbación</em> y se interpreta como la manera en que el ruido se introduce y afecta los estados del sistema dinámico.</p>
+<p>Tras realizar la estimación antes mencionada, nos arroja un 98% de ajuste, siendo las matrices antes mencionadas las siguientes:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A} = \begin{bmatrix}
+0 &amp; 1  \\ 
+-15.07 &amp; -0.00135
+\end{bmatrix} \quad \mathbf{C} = \begin{bmatrix}
+1 &amp; 0
+\end{bmatrix} \quad \mathbf{K}  = \begin{bmatrix}
+4.323  \\ 
+0.5977
+\end{bmatrix}\end{split}\]</div>
+<p>Es importante mencionar que la forma de la matriz <span class="math notranslate nohighlight">\(A\)</span> estimada es en su forma canónica controlable y dicha estimación se realizó en tiempo continuo.</p>
+<p>Como se mencionó previamente, aunque el sistema es un <strong>masa-resorte</strong>, en condiciones reales debe modelarse como un <strong>masa-resorte-amortiguador</strong> debido a la presencia de fricción. Este es un sistema bien conocido, cuya representación en forma canónica controlable es:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A} = \begin{bmatrix}
+0 &amp; 1  \\ 
+-\frac{k}{m} &amp; -\frac{b}{m}
+\end{bmatrix}\end{split}\]</div>
+<p>donde <span class="math notranslate nohighlight">\(m\)</span> es la masa, <span class="math notranslate nohighlight">\(b\)</span> es el coeficiente de fricción o el coeficiente de amortiguamiento y <span class="math notranslate nohighlight">\(k\)</span> es la constante del resorte.</p>
+<p>Dado que se tiene acceso al sistema físico, es posible conocer la masa y, mediante pruebas experimentales, determinar la constante del resorte. Los valores teóricos de estos parámetros son:</p>
+<div class="math notranslate nohighlight">
+\[m_{teo} = 698.4[g] \quad k_{teo} = 10[N/m]\]</div>
+<p>Con estos valores, se puede calcular el error absoluto porcentual en la estimación del cociente <span class="math notranslate nohighlight">\(\frac{k}{m}\)</span></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m_teo</span><span class="p">,</span> <span class="n">k_teo</span> <span class="o">=</span> <span class="mf">0.6984</span><span class="p">,</span> <span class="mi">10</span>
+<span class="n">c_km_teo</span> <span class="o">=</span> <span class="n">k_teo</span> <span class="o">/</span> <span class="n">m_teo</span>
+<span class="n">c_km_est</span> <span class="o">=</span> <span class="mf">15.07</span>
+
+<span class="n">error_est</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">c_km_teo</span> <span class="o">-</span> <span class="n">c_km_est</span><span class="p">)</span> <span class="o">/</span> <span class="n">c_km_teo</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text</span><span class="se">{{</span><span class="s2">Cociente estimado </span><span class="se">}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">hat</span><span class="se">{{\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">k</span><span class="se">}}{{</span><span class="s2">m</span><span class="se">}}}}</span><span class="s2"> : </span><span class="si">{</span><span class="n">c_km_est</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">; </span><span class="se">\\</span><span class="s2">left[ </span><span class="se">\\</span><span class="s2">mathrm</span><span class="se">{{\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">N</span><span class="se">}}{{</span><span class="s2">kg </span><span class="se">\\</span><span class="s2">cdot m</span><span class="se">}}}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">right]&quot;</span><span class="p">))</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text</span><span class="se">{{</span><span class="s2">Cociente real </span><span class="se">}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">k</span><span class="se">}}{{</span><span class="s2">m</span><span class="se">}}</span><span class="s2"> : </span><span class="si">{</span><span class="n">c_km_teo</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">; </span><span class="se">\\</span><span class="s2">left[ </span><span class="se">\\</span><span class="s2">mathrm</span><span class="se">{{\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">N</span><span class="se">}}{{</span><span class="s2">kg </span><span class="se">\\</span><span class="s2">cdot m</span><span class="se">}}}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">right]&quot;</span><span class="p">))</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text</span><span class="se">{{</span><span class="s2">Error absoluto porcentual del cociente  </span><span class="se">}}</span><span class="s2">: </span><span class="si">{</span><span class="n">error_est</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="se">\\</span><span class="s2">%&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \text{Cociente estimado } \hat{\frac{k}{m}} : 15.07 \; \left[ \mathrm{\frac{N}{kg \cdot m}} \right]\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \text{Cociente real } \frac{k}{m} : 14.318 \; \left[ \mathrm{\frac{N}{kg \cdot m}} \right]\]</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \text{Error absoluto porcentual del cociente  }: 5.25\%\]</div>
+</div>
+</div>
+<p>Se tiene un error menor al <span class="math notranslate nohighlight">\(6\%\)</span>, por lo que se puede considerar una estimación precisa. A partir de esto, es posible determinar el coeficiente de fricción del aire como</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c_bm_est</span> <span class="o">=</span> <span class="mf">0.00135</span>
+
+<span class="n">b_est</span> <span class="o">=</span> <span class="n">c_bm_est</span> <span class="o">*</span> <span class="n">m_teo</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">text</span><span class="se">{{</span><span class="s2">Coeficiente de fricción del aire </span><span class="se">}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">hat</span><span class="se">{{</span><span class="s2">b</span><span class="se">}}</span><span class="s2"> : </span><span class="si">{</span><span class="n">b_est</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">; </span><span class="se">\\</span><span class="s2">left[ </span><span class="se">\\</span><span class="s2">mathrm</span><span class="se">{{\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">N </span><span class="se">\\</span><span class="s2">cdot s</span><span class="se">}}{{</span><span class="s2"> m</span><span class="se">}}}}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">right]&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\displaystyle \text{Coeficiente de fricción del aire } \hat{b} : 0.00094 \; \left[ \mathrm{\frac{N \cdot s}{ m}} \right]\]</div>
+</div>
+</div>
+<p>Por lo tanto, hasta el momento, con un sensor de posición y el conocimiento de un parámetro del sistema, como la masa, es posible estimar otros dos parámetros: la constante del resorte y el coeficiente de fricción del aire. Esto puede aplicarse en viscosímetros, donde, a partir de este parámetro y situando el sistema en otro fluido, como el agua, se puede determinar la viscosidad del fluido.</p>
+<p>Ahora bien, es posible implementar un observador de estados para estimar la velocidad de la masa.</p>
+</section>
+<section id="implementacion-de-observador-de-estados">
+<h2>Implementación de Observador de estados.<a class="headerlink" href="#implementacion-de-observador-de-estados" title="Link to this heading">#</a></h2>
+<p>La dinámica del observador se expresa como</p>
+<div class="math notranslate nohighlight">
+\[\dot{\hat{\mathbf{x}}} = \mathbf{A}\hat{\mathbf{x}} + \mathbf{L}(y-\hat{y})\]</div>
+<div class="math notranslate nohighlight">
+\[\hat{y} = \mathbf{C}\hat{\mathbf{x}}\]</div>
+<p>donde L es la ganancia del observador. Esta ganancia la podemos obtener mediante la siguiente condición</p>
+<div class="math notranslate nohighlight">
+\[|sI-A+LC| = 0\]</div>
+<p>Dado que el sistema es observable, es posible ubicar los polos del observador en cualquier posición deseada. Con base en esto, se puede diseñar una función que calcule la ganancia del observador a partir de la elección de sus polos, como se muestra a continuación.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cal_obs_gain</span><span class="p">(</span><span class="n">lamb1</span><span class="p">,</span> <span class="n">lamb2</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Esta función retorna el vector L con la ganancia del observador, tras recibir los polos</span>
+<span class="sd">    deseados del observador y la matriz A del sistema.</span>
+
+<span class="sd">    Parámetros:</span>
+<span class="sd">    lamb1 : float</span>
+<span class="sd">        Polo 1 del observador.</span>
+<span class="sd">    lamb2 : float</span>
+<span class="sd">        Polo 2 del observador.</span>
+<span class="sd">    A : ndarray</span>
+<span class="sd">        Matriz A del sistema.</span>
+
+<span class="sd">    Retorna:</span>
+<span class="sd">    _ : ndarray</span>
+<span class="sd">        Ganancias del observador L.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">L1</span> <span class="o">=</span> <span class="n">lamb1</span> <span class="o">+</span> <span class="n">lamb2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">L2</span> <span class="o">=</span> <span class="p">(</span><span class="n">lamb1</span> <span class="o">*</span> <span class="n">lamb2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">L1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">L1</span><span class="p">],</span> <span class="p">[</span><span class="n">L2</span><span class="p">]])</span>
+
+<span class="c1">#  Esta función no es general y fue desarrollada para este caso.</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Polos del observador para modificar</span>
+<span class="n">lamb1</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">lamb2</span> <span class="o">=</span> <span class="mi">20</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Matrices del sistema estimadas con N4SID</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">15.07</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.00135</span><span class="p">]])</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>  <span class="c1"># Solo medimos la posición</span>
+
+<span class="c1"># Función para obtener `y`</span>
+<span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="n">t_query</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t_query</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Evitar índices fuera de rango</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">]]])</span>
+
+<span class="c1"># Definir la ecuación del observador</span>
+<span class="k">def</span> <span class="nf">observador</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">t_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">get_y</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">)</span>  <span class="c1"># Obtener y en el instante dado</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">C</span> <span class="o">@</span> <span class="n">x_hat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Salida estimada</span>
+    <span class="n">dx_hat</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">x_hat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">L</span> <span class="o">@</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_hat</span><span class="p">)</span>  <span class="c1"># Ecuación del observador</span>
+    <span class="k">return</span> <span class="n">dx_hat</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="c1"># Ganancias del observador</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">cal_obs_gain</span><span class="p">(</span><span class="n">lamb1</span><span class="p">,</span> <span class="n">lamb2</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+
+<span class="c1"># Condición inicial del observador</span>
+<span class="n">x0_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># Resolver la ecuación del observador con los datos reales</span>
+<span class="n">t_span</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">sol_hat</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">observador</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">x0_hat</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">pos</span><span class="p">),</span> <span class="n">t_eval</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>  
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Graficar resultado</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Posición medida (y)&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sol_hat</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">sol_hat</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Posición estimada ($\hat</span><span class="si">{x}</span><span class="s2">_1$)&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$t\ [s]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$x\ [m]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/b889dea9c1ca3f8492d8429776706288b8dea8dc3ed269ade1a68c2528719da7.png" src="../../_images/b889dea9c1ca3f8492d8429776706288b8dea8dc3ed269ade1a68c2528719da7.png" />
+</div>
+</div>
+<p>Se puede apreciar de la imagen anterior que el observador estima correctamente la posición, pero veamos el desarrollo del error  en la siguiente gráfica</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Graficar el error </span>
+<span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sol_hat</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Tiempo [s]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;|y-$\hat</span><span class="si">{x}</span><span class="s2">_1$| [m]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/87c4585c963fbd3fb28b85e7444635d5494ba89d1ac7c0b4979f5de56a4bfb29.png" src="../../_images/87c4585c963fbd3fb28b85e7444635d5494ba89d1ac7c0b4979f5de56a4bfb29.png" />
+</div>
+</div>
+<p>Se puede observar que el error es muy pequeño y que su magnitud decrece con el tiempo. Finalmente, se analizará la estimación de la velocidad, comparándola con la obtenida al derivar los datos de la posición medida (afectados por ruido de medición) y con la estimación obtenida mediante el filtro de Savitzky-Golay.</p>
+<p>El filtro de Savitzky-Golay es una técnica utilizada para suavizar señales y calcular derivadas sin perder información relevante, especialmente en señales ruidosas. Su fundamento radica en el ajuste de polinomios locales mediante el método de mínimos cuadrados, lo que permite reducir el impacto del ruido en la estimación de la derivada.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Derivada numérica de la posición</span>
+<span class="n">dx</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">vel_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">/</span> <span class="n">dx</span>
+
+<span class="c1"># Derivada con el filtro de Savitzky-Golay</span>
+<span class="n">vel_fil</span> <span class="o">=</span> <span class="n">savgol_filter</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">polyorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+
+<span class="c1"># Gráfica comparativa de la velocidad</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vel_diff</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Derivada numérica de la posición&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sol_hat</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Velocidad estimada con el Observador&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vel_fil</span><span class="p">,</span> <span class="s1">&#39;g-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Derivada con filtro de Savitzky-Golay&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Muestras&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\dot</span><span class="si">{x}</span><span class="s1">\ [m/s]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/28aa18cbb191855543487e6ff8fdcb376452cfafc5d59fa8fc1fc1f9a3ea6e7a.png" src="../../_images/28aa18cbb191855543487e6ff8fdcb376452cfafc5d59fa8fc1fc1f9a3ea6e7a.png" />
+</div>
+</div>
+</section>
+<section id="discusion">
+<h2>Discusión<a class="headerlink" href="#discusion" title="Link to this heading">#</a></h2>
+<p>En la última gráfica presentada, se pueden observar tres métodos distintos para estimar la velocidad. La derivada numérica, que es computacionalmente más económica, presenta un alto nivel de ruido, lo cual es común en las diferenciaciones numéricas directas debido a la amplificación de errores en datos discretos. Por otro lado, la estimación mediante el observador reduce el ruido en comparación con la derivada numérica, aunque aún presenta variaciones considerables. Finalmente, el uso del filtro de Savitzky-Golay suaviza significativamente los datos, eliminando gran parte del ruido sin distorsionar la tendencia general de la señal. Sin embargo, este método no considera la dinámica del sistema, por lo que no es óptimo cuando se dispone de un modelo conocido, como en este caso.</p>
+<p>Esto sugiere que el uso de filtros de suavizado es una estrategia útil cuando se desea calcular derivadas sin amplificar el ruido en aplicaciones fuera de línea con altas tasas de muestreo. No obstante, en aplicaciones en tiempo real, el observador resulta más estable y adecuado si se cuenta con el modelo del sistema, siendo este el estimado a partir de los datos mediante N4SID.</p>
+<p>En conclusión, se ha demostrado que, con un simple sensor de posición y un microcontrolador, es posible implementar algoritmos que doten de inteligencia al sensor, permitiéndole estimar parámetros físicos del sistema a medir, como el coeficiente del resorte y el coeficiente de fricción, así como estados del sistema, como la velocidad e incluso la aceleración.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "executablebooks/jupyter-book",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content\chapter4"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../chapter3/chapter3.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">anterior</p>
+        <p class="prev-next-title">Estimación de la entrada mediante Mínimos Cuadrados Recursivos</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../references/references.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">siguiente</p>
+        <p class="prev-next-title">Referencias</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#planteamiento">Planteamiento</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estimacion-por-subespacios">Estimación por subespacios</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementacion-de-observador-de-estados">Implementación de Observador de estados.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discusion">Discusión</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Daan Yael Maldonado Uriostigue and Roberto Giovanni Ramírez Chavarría 
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p> Recurso académico realizado gracias al apoyo del proyecto UNAM-DGAPA-PAPIME PE101524.</p>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

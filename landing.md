@@ -1,0 +1,12 @@
+# Apuntes de Sensores Inteligentes.
+
+Los sensores inteligentes han revolucionado la forma en que se adquiere, procesa y analiza la información en sistemas dinámicos. A diferencia de los sensores convencionales, estos incorporan algoritmos que permiten la estimación de parámetros y estados, dotando al sistema de mayor precisión y autonomía en la toma de decisiones. En este contexto, los métodos de identificación y estimación juegan un papel fundamental en el desarrollo de sensores.
+
+A lo largo de los capítulos presentados, se aborda distintas estrategias basadas en mínimos cuadrados para la identificación de sistemas y su aplicación en sensores inteligentes. En el primer capítulo, se presentan los fundamentos de los mínimos cuadrados en sus variantes ordinaria, recursiva y con factor de olvido, resaltando su importancia en la estimación de parámetros en tiempo real. Posteriormente, en el segundo capítulo, se analiza el caso de una galga extensiométrica modelada como un sistema dinámico, donde se aplica la estimación por mínimos cuadrados para determinar la masa aplicada sobre ella.
+
+En el tercer capítulo, se introduce un enfoque basado en la estimación de la entrada de un sistema mediante mínimos cuadrados recursivos, lo que amplía las capacidades de los sensores inteligentes más allá de la simple medición de variables de salida. Finalmente, en el cuarto capítulo, se presenta un caso práctico que ejemplifica la aplicación de técnicas en la identificación de un sistema masa-resorte-amortiguador. En este caso, se emplea un sensor de posición junto con el método N4SID, basado en subespacios, para estimar parámetros físicos como la constante del resorte y el coeficiente de fricción del aire. Además, se analiza la estimación de la velocidad mediante diferentes enfoques: la derivación numérica, un observador de estados y el filtro de Savitzky-Golay. Se comparan sus ventajas y limitaciones, destacando cómo el observador permite una estimación más estable en tiempo real, mientras que el filtro es útil para suavizar señales en aplicaciones fuera de línea.
+
+A lo largo de estos capítulos, se demuestra cómo la combinación de sensores y algoritmos de estimación permite mejorar la precisión, confiabilidad y funcionalidad de los sistemas de medición, abriendo nuevas posibilidades en el desarrollo de sensores inteligentes para diversas aplicaciones en ingeniería.
+
+```{tableofcontents}
+```
