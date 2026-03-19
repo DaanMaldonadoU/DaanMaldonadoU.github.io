@@ -713,7 +713,7 @@
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;&gt;:4: SyntaxWarning: invalid escape sequence &#39;\h&#39;
 &lt;&gt;:4: SyntaxWarning: invalid escape sequence &#39;\h&#39;
-C:\Users\Daan Maldonado\AppData\Local\Temp\ipykernel_13700\2923344434.py:4: SyntaxWarning: invalid escape sequence &#39;\h&#39;
+C:\Users\Daan Maldonado\AppData\Local\Temp\ipykernel_26184\2923344434.py:4: SyntaxWarning: invalid escape sequence &#39;\h&#39;
   plt.plot(sol_hat.t, sol_hat.y[0], label=&quot;Posición estimada ($\hat{x}_1$)&quot;, linestyle=&quot;dashed&quot;, color =&#39;b&#39;, linewidth = 4)
 </pre></div>
 </div>
@@ -744,7 +744,7 @@ C:\Users\Daan Maldonado\AppData\Local\Temp\ipykernel_13700\2923344434.py:4: Synt
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;&gt;:7: SyntaxWarning: invalid escape sequence &#39;\h&#39;
 &lt;&gt;:7: SyntaxWarning: invalid escape sequence &#39;\h&#39;
-C:\Users\Daan Maldonado\AppData\Local\Temp\ipykernel_13700\262478947.py:7: SyntaxWarning: invalid escape sequence &#39;\h&#39;
+C:\Users\Daan Maldonado\AppData\Local\Temp\ipykernel_26184\262478947.py:7: SyntaxWarning: invalid escape sequence &#39;\h&#39;
   plt.ylabel(&quot;|y-$\hat{x}_1$| [m]&quot;)
 </pre></div>
 </div>
@@ -918,6 +918,19 @@ Por Daan Yael Maldonado Uriostigue and Roberto Giovanni Ramírez Chavarría
     document.documentElement.setAttribute("data-theme", "light");
     var tocNav = document.getElementById("pst-page-toc-nav");
     if (tocNav) { tocNav.classList.add("bd-toc-nav"); }
+    /* Accesibilidad: alt text para animaciones */
+    document.querySelectorAll('img[id^="_anim_img"]').forEach(function(img) {
+      if (!img.getAttribute('alt')) img.setAttribute('alt', 'Animación interactiva');
+    });
+    /* Accesibilidad: labels para sliders de animación */
+    document.querySelectorAll('input.anim-slider').forEach(function(slider) {
+      if (!slider.getAttribute('aria-label')) slider.setAttribute('aria-label', 'Control de animación');
+    });
+    /* Accesibilidad: label para barra de búsqueda */
+    var searchInput = document.querySelector('input[name="q"][type="search"]');
+    if (searchInput && !searchInput.getAttribute('aria-label')) {
+      searchInput.setAttribute('aria-label', 'Buscar en este libro');
+    }
   });
   window.addEventListener("load", function() {
     function refreshScrollSpy() {

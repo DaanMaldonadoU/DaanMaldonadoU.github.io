@@ -671,6 +671,19 @@ Por Daan Yael Maldonado Uriostigue and Roberto Giovanni Ramírez Chavarría
     document.documentElement.setAttribute("data-theme", "light");
     var tocNav = document.getElementById("pst-page-toc-nav");
     if (tocNav) { tocNav.classList.add("bd-toc-nav"); }
+    /* Accesibilidad: alt text para animaciones */
+    document.querySelectorAll('img[id^="_anim_img"]').forEach(function(img) {
+      if (!img.getAttribute('alt')) img.setAttribute('alt', 'Animación interactiva');
+    });
+    /* Accesibilidad: labels para sliders de animación */
+    document.querySelectorAll('input.anim-slider').forEach(function(slider) {
+      if (!slider.getAttribute('aria-label')) slider.setAttribute('aria-label', 'Control de animación');
+    });
+    /* Accesibilidad: label para barra de búsqueda */
+    var searchInput = document.querySelector('input[name="q"][type="search"]');
+    if (searchInput && !searchInput.getAttribute('aria-label')) {
+      searchInput.setAttribute('aria-label', 'Buscar en este libro');
+    }
   });
   window.addEventListener("load", function() {
     function refreshScrollSpy() {

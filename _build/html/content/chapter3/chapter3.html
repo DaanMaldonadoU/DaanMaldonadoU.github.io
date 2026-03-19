@@ -800,7 +800,7 @@ G &amp;  \Delta \hat{y}(N-n) &amp; \Delta \hat{y}(N-n+1) &amp; \dots &amp; \Delt
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/3ede2f9a18a7d40e24899790fa0aeee77cb5d95bca12c42a5674acf944ddb165.png" src="../../_images/3ede2f9a18a7d40e24899790fa0aeee77cb5d95bca12c42a5674acf944ddb165.png" />
+<img alt="../../_images/0108235c8b7c110bfcd4be6fcf173fec342109dc5ff97cd2263e00acd0f2ee40.png" src="../../_images/0108235c8b7c110bfcd4be6fcf173fec342109dc5ff97cd2263e00acd0f2ee40.png" />
 </div>
 </div>
 <p>Como podemos apreciar, rápidamente el algoritmo converge al valor de la entrada. Sin embargo, al compararlo con la salida, puede no ser tan evidente. Por lo tanto, en la siguiente figura se muestra la entrada estimada junto con la entrada real y el desarrollo del error absoluto porcentual entre la entrada real y la estimada.</p>
@@ -836,8 +836,8 @@ G &amp;  \Delta \hat{y}(N-n) &amp; \Delta \hat{y}(N-n+1) &amp; \dots &amp; \Delt
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/3a5c52220feccf8891d4f5d857370af2599bb9b9ac417d3ade2d0124992ddd2e.png" src="../../_images/3a5c52220feccf8891d4f5d857370af2599bb9b9ac417d3ade2d0124992ddd2e.png" />
-<img alt="../../_images/38e1d45ba4fec36c1899a26f3f104bb3baf8fd564a099aa9641a0346936efcdf.png" src="../../_images/38e1d45ba4fec36c1899a26f3f104bb3baf8fd564a099aa9641a0346936efcdf.png" />
+<img alt="../../_images/fff13ab8696ced0030f8e7ab052db4bf82536acbffbe443eed164d3d22a7e47a.png" src="../../_images/fff13ab8696ced0030f8e7ab052db4bf82536acbffbe443eed164d3d22a7e47a.png" />
+<img alt="../../_images/5ae1586c5297f0ebf9b1440b1f40c945963dade0b2de775653f407f39fb5ea70.png" src="../../_images/5ae1586c5297f0ebf9b1440b1f40c945963dade0b2de775653f407f39fb5ea70.png" />
 </div>
 </div>
 <p>Como podemos apreciar, el error absoluto porcentual, rápidamente es menor al <span class="math notranslate nohighlight">\(0.2\%\)</span></p>
@@ -970,7 +970,7 @@ G &amp;  \Delta \hat{y}(N-n) &amp; \Delta \hat{y}(N-n+1) &amp; \dots &amp; \Delt
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/688b65393f30183f380d8ef459ccd3e6b0dfd3a1bd2297ace598f49eb28507db.png" src="../../_images/688b65393f30183f380d8ef459ccd3e6b0dfd3a1bd2297ace598f49eb28507db.png" />
+<img alt="../../_images/1fa6c2d43e3290253b6ade5f068b6780036af89dcb254fce97a41591ee964fce.png" src="../../_images/1fa6c2d43e3290253b6ade5f068b6780036af89dcb254fce97a41591ee964fce.png" />
 </div>
 </div>
 <p>Como podemos apreciar, este método basado en datos, le provee al sensor la capacidad de estimar la entrada a partir de mediciones ruidosas de la salida, esto con el mínimo error posible, por lo que resulta práctico para aplicaciones en tiempo real.</p>
@@ -1101,6 +1101,19 @@ Por Daan Yael Maldonado Uriostigue and Roberto Giovanni Ramírez Chavarría
     document.documentElement.setAttribute("data-theme", "light");
     var tocNav = document.getElementById("pst-page-toc-nav");
     if (tocNav) { tocNav.classList.add("bd-toc-nav"); }
+    /* Accesibilidad: alt text para animaciones */
+    document.querySelectorAll('img[id^="_anim_img"]').forEach(function(img) {
+      if (!img.getAttribute('alt')) img.setAttribute('alt', 'Animación interactiva');
+    });
+    /* Accesibilidad: labels para sliders de animación */
+    document.querySelectorAll('input.anim-slider').forEach(function(slider) {
+      if (!slider.getAttribute('aria-label')) slider.setAttribute('aria-label', 'Control de animación');
+    });
+    /* Accesibilidad: label para barra de búsqueda */
+    var searchInput = document.querySelector('input[name="q"][type="search"]');
+    if (searchInput && !searchInput.getAttribute('aria-label')) {
+      searchInput.setAttribute('aria-label', 'Buscar en este libro');
+    }
   });
   window.addEventListener("load", function() {
     function refreshScrollSpy() {
