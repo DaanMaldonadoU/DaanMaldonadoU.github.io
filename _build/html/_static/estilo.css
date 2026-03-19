@@ -1,3 +1,16 @@
+/* Forzar tema claro — sobreescribir todas las variables dark del tema */
+html, html[data-theme="dark"], html[data-theme="light"] {
+  --pst-color-background: #ffffff !important;
+  --pst-color-on-background: #f8f8f8 !important;
+  --pst-color-text-base: #1b1b1b !important;
+  --pst-color-surface: #f0f0f0 !important;
+  --pst-color-on-surface: #1b1b1b !important;
+  --pst-color-border: #dddddd !important;
+  --pst-color-heading: #1b1b1b !important;
+  --bs-body-bg: #ffffff !important;
+  --bs-body-color: #1b1b1b !important;
+  color-scheme: light !important;
+}
 
 body {
   background-color: #ffffff;
@@ -287,10 +300,15 @@ html[data-theme="dark"] button {
 }
 
 /* Barra lateral secundaria */
-.sidebar-secondary-items {
+.bd-sidebar-secondary {
   background-color: #ffffff !important;
   color: #1b1b1b !important;
   border-left: 1px solid #dddddd;
+}
+
+.sidebar-secondary-items {
+  background-color: #ffffff !important;
+  color: #1b1b1b !important;
 }
 
 /* Tabla de contenido */
@@ -333,9 +351,11 @@ html[data-theme="dark"] button {
   box-shadow: inset 3px 0 0 #c0392b !important;
 }
 
-/* Modo oscuro para sidebar */
+/* Modo oscuro overrides para sidebar */
+html[data-theme="dark"] .bd-sidebar-secondary,
 html[data-theme="dark"] .sidebar-secondary-items,
 html[data-theme="dark"] .page-toc {
   background-color: #ffffff !important;
   color: #1b1b1b !important;
 }
+
