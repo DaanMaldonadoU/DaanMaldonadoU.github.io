@@ -7,6 +7,7 @@ logo: logo.png  # Tu logotipo, que también se mostrará en la barra de navegaci
 # Configuración para notebooks
 execute:
   execute_notebooks: force  # Ejecuta notebooks en cada compilación
+  timeout: 120  # Timeout de 120 segundos para celdas con animaciones
 
 # Definición para salida en formato LaTeX y PDF
 latex:
@@ -19,20 +20,52 @@ bibtex_bibfiles:
 
 # Opciones para botones de GitHub y enlaces
 repository:
-  url: https://github.com/executablebooks/jupyter-book  # URL de tu libro en GitHub
-  path_to_book: docs  # Ruta opcional relativa al repositorio raíz
-  branch: main  # Rama usada para crear enlaces
+  url: https://github.com/DaanMaldonadoU/DaanMaldonadoU.github.io
+  path_to_book: ''
+  branch: main
 
 # Habilitar botones de GitHub
 html:
   use_issues_button: true
   use_repository_button: true
-  extra_footer: "<p> Recurso académico realizado gracias al apoyo del proyecto UNAM-DGAPA-PAPIME PE101524.</p>"
-  extra_navbar: 
+  extra_footer: |
+    <p>Recurso académico realizado gracias al apoyo del proyecto UNAM-DGAPA-PAPIME PE101524.</p>
+    <hr style="margin:10px 0;">
+    <p style="font-size:0.85em;">
+      "Apuntes de Sensores Inteligentes" &copy; 2025
+      por D. Y. Maldonado Uriostigue y R. G. Ramírez Chavarría,
+      Universidad Nacional Autónoma de México, Avenida Universidad 3000, Ciudad Universitaria, Coyoacán, 04510, Ciudad de México.<br>
+      Esta obra está bajo una licencia
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">Creative Commons Atribución/Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional</a>.<br>
+      <strong>Última Actualización: 2025.</strong>
+    </p>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         document.documentElement.removeAttribute("data-theme");
         document.documentElement.setAttribute("data-theme", "light");
+        var tocNav = document.getElementById("pst-page-toc-nav");
+        if (tocNav) { tocNav.classList.add("bd-toc-nav"); }
+      });
+      window.addEventListener("load", function() {
+        function refreshScrollSpy() {
+          if (typeof bootstrap !== 'undefined' && bootstrap.ScrollSpy) {
+            var spy = bootstrap.ScrollSpy.getInstance(document.body);
+            if (spy) {
+              spy.refresh();
+            } else {
+              var target = document.querySelector('.bd-toc-nav');
+              if (target) {
+                new bootstrap.ScrollSpy(document.body, {
+                  target: '.bd-toc-nav',
+                  rootMargin: '0px 0px -60%',
+                  threshold: [0.1, 0.5, 1]
+                });
+              }
+            }
+          }
+        }
+        setTimeout(refreshScrollSpy, 500);
+        setTimeout(refreshScrollSpy, 2000);
       });
     </script>
 
@@ -45,18 +78,14 @@ jupyter:
 launch_buttons:
   binderhub_url: https://mybinder.org
   thebe: true
-  repository_url: https://github.com/executablebooks/jupyter-book  # Sustituye por la URL de tu repositorio
+  repository_url: https://github.com/DaanMaldonadoU/DaanMaldonadoU.github.io
 
 sphinx:
   config:
     language: es
     html_static_path: ['_static']
-   # html_theme: quantecon_book_theme
-   # html_theme_options:
-   # header_organisation: CIDE
-parse:
-  myst_enable_extensions : ["dollarmath"]  # URI schemes that will be recognised as external URLs in Markdown links
+    html_css_files:
+      - estilo.css
 
-  html:
-  extra_css:
-    - _static/estilo.css
+parse:
+  myst_enable_extensions: ["dollarmath"]
